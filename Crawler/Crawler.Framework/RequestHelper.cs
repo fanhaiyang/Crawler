@@ -76,5 +76,44 @@ namespace Crawler.Framework
 
             return pageHtml;
         }
+        
+        /// <summary>
+        /// HttpWebRequest获取Post接口数据
+        /// </summary>
+        /// <param name="urlPath"></param>
+        /// <returns></returns>
+        public static string HttpGetPageHtml(string urlPath)
+        {
+            var request = (HttpWebRequest)WebRequest.Create("xxxxx");
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Method = "Post";
+            try
+            {
+                string param1 = "1111";
+                string param2 = "2222";
+                string paramStr = $"param1={param1}&param2={param2}";
+                request.ContentLength = paramStr.Length;
+                
+                byte[] data = Encoding.UTF8.GetBytes(paramStr);
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+                string result = string.Empty;
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    var reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                    result = reader.ReadToEnd();
+
+                    File.WriteAllText($"{AppDomain.CurrentDomain.BaseDirectory}\\resule.txt", result); // 文本存储返回结果
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                Console.ReadKey();
+            }
+            Console.ReadKey();
+        }
     }
 }
